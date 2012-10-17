@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <name>NerTypeSystem</name>
+  <description>Type System Definition for the NER</description>
+  <version>1.0</version>
+  <vendor>The Apache Software Foundation</vendor>
+  <types>
+    <typeDescription>
+      <name>GeneNameEntity</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName> <!--output type-->
+      <features>
+        <featureDescription>
+          <name>sentenceID</name>
+          <description>ID of sentence that contains the gene name entity</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+         <featureDescription>
+          <name>name</name>
+          <description>name of the gene entity</description>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+         </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>
