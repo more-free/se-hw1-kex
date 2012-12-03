@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.StringReader;
+import java.io.*;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.Word;
@@ -31,10 +28,10 @@ import java.util.*;
  */
 public class EntityRecognizer{
   /* dictionary files, which actually should be written into a resource file. */
-  private String GENE_TERM_DIC = "src/main/resources/dictionary/gene_term_dictionary.txt";
-  private String COMMON_WORDS = "src/main/resources/dictionary/common_words.txt";
-  private String FULL_WORDS = "src/main/resources/dictionary/full_dictionary.txt";
-  private String CORPUS = "src/main/resources/dictionary/gone_with_the_wind.txt";
+  private String GENE_TERM_DIC = "/dictionary/gene_term_dictionary.txt";
+  private String COMMON_WORDS = "/dictionary/common_words.txt";
+  private String FULL_WORDS = "/dictionary/full_dictionary.txt";
+  private String CORPUS = "/dictionary/gone_with_the_wind.txt";
   
   // the Part-Of-Speech tagger, which is used to assist the final filtering of gene names.
   private PosTagger posTagger = new PosTagger();
@@ -96,7 +93,7 @@ public class EntityRecognizer{
       
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -118,7 +115,7 @@ public class EntityRecognizer{
       sc.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -137,7 +134,7 @@ public class EntityRecognizer{
       pw.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -153,9 +150,11 @@ public class EntityRecognizer{
    */
   private void loadKnownEntities(String dic){
     try{
-      Scanner sc = new Scanner(new File(dic));
-      while(sc.hasNextLine()){
-        String line = sc.nextLine();
+      BufferedReader reader = new BufferedReader(
+              new InputStreamReader(this.getClass().getResourceAsStream(dic))
+              );
+      String line = "";
+      while( ( line = reader.readLine() ) != null ){
         String [] terms  = line.split(" ");
         for(String t : terms)
           allKnownEntities.add(t.toLowerCase());
@@ -163,10 +162,10 @@ public class EntityRecognizer{
         singleKnownEntities.add(terms[0]);
       }
       
-      sc.close();
+      reader.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -175,18 +174,21 @@ public class EntityRecognizer{
    */
   private void loadDictionary(String dic){
     Morphology mor = new Morphology();
+    
+    InputStream stream = this.getClass().getResourceAsStream(dic);
     try{
-      Scanner sc = new Scanner(new File(dic));
+      Scanner sc = new Scanner(stream);
       while(sc.hasNext()){
         String line = sc.next();
         fullDictionary.add(line);
         fullDictionary.add(mor.stem(line));
       }
       
+      stream.close();
       sc.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -196,17 +198,20 @@ public class EntityRecognizer{
   private void loadForbiddenWords(String file){
     try{
       Morphology mor = new Morphology();
-      Scanner sc = new Scanner(new File(file));
+      
+      InputStream stream = this.getClass().getResourceAsStream(file);
+      Scanner sc = new Scanner(stream);
       while(sc.hasNext()){
         String token = sc.next().trim();
          commonWords.add(token);
          commonWords.add(mor.stem(token)); 
       }
       
+      stream.close();
       sc.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
   
@@ -215,7 +220,8 @@ public class EntityRecognizer{
    */
   private void loadForbiddenWords(String file, Set<String> dic){
     try{
-      Scanner sc = new Scanner(new File(file));
+      InputStream stream = this.getClass().getResourceAsStream(file);
+      Scanner sc = new Scanner(stream);
       while(sc.hasNext()){
         String token = sc.next().trim();
         
@@ -223,10 +229,11 @@ public class EntityRecognizer{
           commonWords.add(token);
       }
       
+      stream.close();
       sc.close();
     }
     catch(Exception e){
-      
+      System.out.println("No such file found!");
     }
   }
    
@@ -361,6 +368,18 @@ public class EntityRecognizer{
         return false;
     }
     return true;
+  }
+  
+  //for test only
+  public static void main(String [] args){
+    /*
+    InputStream stream = EntityRecognizer.class.getResourceAsStream("/dictionary/common_words.txt");
+    System.out.println(stream != null);
+    stream = EntityRecognizer.class.getClassLoader()
+        .getResourceAsStream("dictionary/common_words.txt");
+    System.out.println(stream != null);
+    */
+    
   }
 }
 

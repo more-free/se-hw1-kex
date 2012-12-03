@@ -109,8 +109,11 @@ public class SimpleRunCPE extends Thread {
    *          Command line arguments - see class description
    */
   public static void main(String[] args) throws Exception {
-    if(args == null || args.length == 0)args = new String[1];
-    args[0] = "src/main/resources/CpeDescriptor.xml";
+    if(args == null || args.length == 0){
+      args = new String[1];
+      args[0] = "src/main/resources/CpeDescriptor.xml";
+    }
+    
     new SimpleRunCPE(args);
   }
 
